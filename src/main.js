@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import './db'
 import app from './app'
 
 const {APP_PORT = null} = process.env

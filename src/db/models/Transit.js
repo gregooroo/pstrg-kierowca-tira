@@ -1,5 +1,4 @@
 import {Schema, model} from 'mongoose'
-import {isValidDateFormat} from '../../utils/date'
 
 const TransitSchema = new Schema({
   source_address: {

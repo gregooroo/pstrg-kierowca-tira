@@ -1,23 +1,27 @@
 import Axios from 'axios'
 import {generateError} from '../utils/errorHandlers'
 
-export async function getCoordinates(location) {
+export default function getCoordinates(location) {
   const ENDPOINT = `https://api.mapbox.com/geocoding/v5/mapbox.places/${location}.json`
   const {MAPBOX_ACCESS_TOKEN} = process.env
-  try {
-    const response = await Axios.get(ENDPOINT, {
+
+  return new Promise((resolve, reject) => {
+    return Axios.get(ENDPOINT, {
       params: {
         access_token: MAPBOX_ACCESS_TOKEN,
       },
     })
-    const result = response.data
-    if (result.features.length === 0) {
-      return generateError(404, 'NotFound', 'Provided location not found.', {
-        location,
+      .then(response => response.data)
+      .then(result => {
+        if (result.features.length === 0) {
+          reject(
+            generateError(404, 'Not Found', 'Provided location not found', {
+              location,
+            }),
+          )
+        }
+        resolve(result.features[0].center)
       })
-    }
-    return result.features[0].center
-  } catch (error) {
-    return error
-  }
+      .catch(error => reject(error))
+  })
 }

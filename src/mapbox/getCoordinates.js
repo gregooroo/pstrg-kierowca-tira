@@ -2,7 +2,11 @@ import Axios from 'axios'
 import {generateError} from '../utils/errorHandlers'
 
 export default function getCoordinates(location) {
-  const ENDPOINT = `https://api.mapbox.com/geocoding/v5/mapbox.places/${location}.json`
+  const normalizedLocation = location
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+
+  const ENDPOINT = `https://api.mapbox.com/geocoding/v5/mapbox.places/${normalizedLocation}.json`
   const {MAPBOX_ACCESS_TOKEN} = process.env
 
   return new Promise((resolve, reject) => {

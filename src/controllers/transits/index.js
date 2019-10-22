@@ -1,12 +1,10 @@
 import Transit from '../../db/models/Transit'
-import {to} from '../../utils/errorHandlers'
 import {validateBody} from './middleware'
+import {catchErrors} from '../../utils/errorHandlers'
 
 async function addTransitHandler(req, res, next) {
   const transit = new Transit(req.body)
-  const [err, result] = await to(transit.save())
-
-  if (err) return next(err)
+  const result = await transit.save()
 
   res.status(200).json({
     success: true,
@@ -15,5 +13,5 @@ async function addTransitHandler(req, res, next) {
 }
 
 export default {
-  addTransit: [validateBody, addTransitHandler],
+  addTransit: [validateBody, catchErrors(addTransitHandler)],
 }

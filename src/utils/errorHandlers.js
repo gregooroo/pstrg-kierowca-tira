@@ -1,18 +1,27 @@
 /**
  * Async / await error handling strategy
  *
- * This helper function is an alternative for try / catch blocks inside async functions.
+ * Instead of using try / catch block inside particular route handler we can wrap entire handler with this helper.
+ * When error occurs this helper automatically catch it and move down into middleware chain
  *
  * Example:
  *
- * async foo() {
- *    const [err, result] = await to(asyncTask())
+ * // Controller file
+ *
+ * async function someRouteHandler(req, res, next) {
+ *  const result = await someAsyncStuff()
+ *
+ *  res.status(200).json(result)
  * }
  *
- * @param {Promise} promise
+ * // Router file
+ *
+ * router.get('/route', catchErrors(somerouteHandler))
+ *
+ * @param {Function} fn
  */
-function to(promise) {
-  return promise.then(result => [null, result]).catch(error => [error, null])
+function catchErrors(fn) {
+  return (req, res, next) => fn(req, res, next).catch(next)
 }
 
 function generateError(
@@ -28,4 +37,4 @@ function generateError(
   return error
 }
 
-export {to, generateError}
+export {catchErrors, generateError}

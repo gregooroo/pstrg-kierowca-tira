@@ -1,6 +1,6 @@
-import {check, validationResult} from 'express-validator'
+import {check} from 'express-validator'
 import {isValidDateFormat} from '../../utils/date'
-import {generateError} from '../../utils/errorHandlers'
+import {expressValidatorResult} from '../helpers'
 
 const validateBody = [
   check('source_address')
@@ -35,29 +35,7 @@ const validateBody = [
     .custom(isValidDateFormat)
     .withMessage('Invalid date or invalid date format. Please use YYYY-MM-DD'),
 
-  function validate(req, res, next) {
-    const errorFormatter = ({param, msg}) => {
-      return {
-        field: param,
-        message: msg,
-      }
-    }
-
-    const errors = validationResult(req).formatWith(errorFormatter)
-
-    if (errors.isEmpty()) return next()
-
-    console.log(errors.array())
-
-    return next(
-      generateError(
-        400,
-        'ValidationError',
-        'Validation Failed',
-        errors.array(),
-      ),
-    )
-  },
+  expressValidatorResult,
 ]
 
 export {validateBody}

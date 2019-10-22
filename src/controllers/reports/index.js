@@ -1,11 +1,12 @@
 import {validateSearchRange, compareDates} from './middleware'
 import Transit from '../../db/models/Transit'
-import {to} from '../../utils/errorHandlers'
+import {catchErrors} from '../../utils/errorHandlers'
 
 async function rangeReportsHandler(req, res, next) {
   const {start_date, end_date} = req.query
 
-  const rangeReportsQuery = Transit.aggregate([
+  // TODO: Extract this as separate mongodb plugin
+  const result = await Transit.aggregate([
     {
       $match: {
         date: {
@@ -28,10 +29,6 @@ async function rangeReportsHandler(req, res, next) {
     },
   ])
 
-  const [err, result] = await to(rangeReportsQuery)
-
-  if (err) return next(err)
-
   res.status(200).json({
     success: true,
     result,
@@ -39,5 +36,9 @@ async function rangeReportsHandler(req, res, next) {
 }
 
 export default {
-  rangeReports: [validateSearchRange, compareDates, rangeReportsHandler],
+  rangeReports: [
+    validateSearchRange,
+    compareDates,
+    catchErrors(rangeReportsHandler),
+  ],
 }

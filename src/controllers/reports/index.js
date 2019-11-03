@@ -1,7 +1,7 @@
 import {validateSearchRange, compareDates} from './middleware'
 import Transit from '../../db/models/Transit'
 import {catchErrors} from '../../utils/errorHandlers'
-import {getMonthlyDateRange} from '../../utils/date'
+import {getMonthlyDateRange, dateWithOrdinal} from '../../utils/date'
 
 async function rangeReportsHandler(req, res, next) {
   const {start_date, end_date} = req.query
@@ -39,7 +39,43 @@ async function rangeReportsHandler(req, res, next) {
 async function monthlyReportsHandler(req, res, next) {
   const [firstDay, lastDay] = getMonthlyDateRange(new Date())
 
-  res.send({firstDay, lastDay})
+  const result = await Transit.aggregate([
+    {
+      $match: {
+        date: {
+          $gte: firstDay,
+          $lte: lastDay,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: '$date',
+        total_distance: {$sum: '$distance'},
+        avg_distance: {$avg: '$distance'},
+        avg_price: {$avg: '$price'},
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: '$_id',
+        total_distance: 1,
+        avg_distance: 1,
+        avg_price: 1,
+      },
+    },
+  ])
+
+  const formattedResult = result.map(({date, ...rest}) => {
+    const formattedDate = dateWithOrdinal(date)
+    return {date: formattedDate, ...rest}
+  })
+
+  res.status(200).json({
+    success: true,
+    result: formattedResult,
+  })
 }
 
 export default {

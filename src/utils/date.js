@@ -39,4 +39,40 @@ function getMonthlyDateRange(date) {
   return [new Date(year, month, 1), new Date(year, month, day - 1)]
 }
 
-export {isValidDateFormat, getMonthlyDateRange}
+function dateWithOrdinal(date) {
+  function nth(d) {
+    if (d > 3 && d < 21) return 'th'
+    switch (d % 10) {
+      case 1:
+        return 'st'
+      case 2:
+        return 'nd'
+      case 3:
+        return 'rd'
+      default:
+        return 'th'
+    }
+  }
+
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+
+  const month = date.getMonth()
+  const day = date.getDate()
+
+  return `${months[month]}, ${day}${nth(day)}`
+}
+
+export {isValidDateFormat, getMonthlyDateRange, dateWithOrdinal}

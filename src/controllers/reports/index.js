@@ -1,6 +1,7 @@
 import {validateSearchRange, compareDates} from './middleware'
 import Transit from '../../db/models/Transit'
 import {catchErrors} from '../../utils/errorHandlers'
+import {getMonthlyDateRange} from '../../utils/date'
 
 async function rangeReportsHandler(req, res, next) {
   const {start_date, end_date} = req.query
@@ -35,10 +36,17 @@ async function rangeReportsHandler(req, res, next) {
   })
 }
 
+async function monthlyReportsHandler(req, res, next) {
+  const [firstDay, lastDay] = getMonthlyDateRange(new Date())
+
+  res.send({firstDay, lastDay})
+}
+
 export default {
   rangeReports: [
     validateSearchRange,
     compareDates,
     catchErrors(rangeReportsHandler),
   ],
+  monthlyReports: [catchErrors(monthlyReportsHandler)],
 }

@@ -15,4 +15,28 @@ function isValidDateFormat(dateString) {
   return dateString === date
 }
 
-export {isValidDateFormat}
+/**
+ * This helper returns an array with two dates
+ * - first day of a current month
+ * - "yesterday" (relative to date parameter)
+ *
+ * if date parameter is a first day of a month - returned values represent the entire past month
+ *
+ * @param {Date} date
+ * @returns {Array}
+ */
+function getMonthlyDateRange(date) {
+  const d = new Date(date)
+  const year = d.getFullYear()
+  const month = d.getMonth()
+  const day = d.getDate()
+
+  if (day === 1) {
+    // return entire previous month
+    return [new Date(year, month - 1, day), new Date(year, month, 0)]
+  }
+
+  return [new Date(year, month, 1), new Date(year, month, day - 1)]
+}
+
+export {isValidDateFormat, getMonthlyDateRange}

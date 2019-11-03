@@ -7,5 +7,6 @@ const router = Router()
 router.post('/transits', transitsController.addTransit)
 
 router.get('/reports/range', reportsController.rangeReports)
+router.get('/reports/monthly', reportsController.monthlyReports)
 
 export default router

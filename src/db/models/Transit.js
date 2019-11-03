@@ -33,7 +33,7 @@ TransitSchema.pre('save', function calculateDistance(next) {
 
   mapbox(source_address, destination_address)
     .then(dist => {
-      this.distance = dist
+      this.distance = dist / 1000 // We want distance in kilometers
       return next()
     })
     .catch(errors => {

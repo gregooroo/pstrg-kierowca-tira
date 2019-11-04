@@ -1,6 +1,8 @@
 import {Schema, model} from 'mongoose'
 import mapbox from '../../mapbox'
 import {generateError} from '../../utils/errorHandlers'
+import findWithinMonthPlugin from '../plugins/findWithinMonth'
+import findWithinDateRangePlugin from '../plugins/findWithinDateRange'
 
 const TransitSchema = new Schema({
   source_address: {
@@ -26,6 +28,9 @@ const TransitSchema = new Schema({
     default: 0,
   },
 })
+
+TransitSchema.plugin(findWithinDateRangePlugin)
+TransitSchema.plugin(findWithinMonthPlugin)
 
 TransitSchema.pre('save', function calculateDistance(next) {
   // eslint-disable-next-line

@@ -33,7 +33,6 @@ TransitSchema.plugin(findWithinDateRangePlugin)
 TransitSchema.plugin(findWithinMonthPlugin)
 
 TransitSchema.pre('save', function calculateDistance(next) {
-  // eslint-disable-next-line
   const {source_address, destination_address} = this
 
   mapbox(source_address, destination_address)

@@ -9,6 +9,6 @@ if (!APP_PORT || !Number(APP_PORT)) {
   process.exit()
 }
 
-const server = app.listen(3000, () => {
+const server = app.listen(APP_PORT, () => {
   console.log(`Server is running on port ${server.address().port}`)
 })

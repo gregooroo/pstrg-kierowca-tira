@@ -4,6 +4,9 @@
   "description": "Zadanie rekrutacyjne",
   "main": "index.js",
   "scripts": {
+    "clean": "rm -rf dist && mkdir dist",
+    "build:server": "babel -d ./dist ./src -s",
+    "build": "npm run clean && npm run build:server",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec babel-node ./src/main.js"
   },
@@ -19,9 +22,12 @@
   },
   "homepage": "https://github.com/gregooroo/pstrg-kierowca-tira#readme",
   "devDependencies": {
+    "@babel/cli": "^7.7.4",
     "@babel/core": "^7.6.4",
     "@babel/node": "^7.6.3",
+    "@babel/plugin-transform-runtime": "^7.7.4",
     "@babel/preset-env": "^7.6.3",
+    "@babel/runtime": "^7.7.4",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
     "eslint-config-standard": "^14.1.0",

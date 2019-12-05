@@ -2,13 +2,13 @@ import 'dotenv/config'
 import './db'
 import app from './app'
 
-const {APP_PORT = null} = process.env
+const {PORT = null} = process.env
 
-if (!APP_PORT || !Number(APP_PORT)) {
+if (!PORT || !Number(PORT)) {
   console.error('Please specify port in .env file')
   process.exit()
 }
 
-const server = app.listen(APP_PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${server.address().port}`)
 })
